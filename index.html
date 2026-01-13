@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUB // INFORMATIKA</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #09090b;
+            --card-bg: #18181b;
+            --neon-green: #00ff9d;
+            --neon-purple: #bd00ff;
+            --neon-blue: #00f3ff;
+            --neon-yellow: #f1c40f;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-dark);
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Efek Grid Halus */
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+            letter-spacing: -2px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            width: 90%;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            text-decoration: none;
+            position: relative;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--shadow-color);
+            border-color: var(--active-color);
+        }
+
+        .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .card-desc { color: #888; font-size: 0.9rem; line-height: 1.4; }
+
+        /* Varian Warna */
+        .c-algo { --active-color: var(--neon-green); --shadow-color: rgba(0, 255, 157, 0.2); }
+        .c-bug { --active-color: var(--neon-purple); --shadow-color: rgba(189, 0, 255, 0.2); }
+        .c-bin { --active-color: var(--neon-blue); --shadow-color: rgba(0, 243, 255, 0.2); }
+        .c-mem { --active-color: var(--neon-yellow); --shadow-color: rgba(241, 196, 15, 0.2); }
+
+        @media (max-width: 768px) { .grid-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <h1>MAINFRAME ACCESS</h1>
+    <p style="color:#666; margin-bottom: 40px;">SELECT YOUR MISSION MODULE</p>
+
+    <div class="grid-container">
+        <a href="algo.html" class="game-card c-algo">
+            <div class="icon">🧩</div>
+            <div class="card-title">ALGO_REORDER</div>
+            <div class="card-desc">Susun logika kode yang teracak agar sistem berjalan.</div>
+        </a>
+        <a href="bug.html" class="game-card c-bug">
+            <div class="icon">🐞</div>
+            <div class="card-title">BUG_HUNTER</div>
+            <div class="card-desc">Analisis kode dan temukan Syntax Error.</div>
+        </a>
+        <a href="binary.html" class="game-card c-bin">
+            <div class="icon">101</div>
+            <div class="card-title">BINARY_BLITZ</div>
+            <div class="card-desc">Konversi desimal ke biner dengan saklar bit.</div>
+        </a>
+        <a href="memory.html" class="game-card c-mem">
+            <div class="icon">🧠</div>
+            <div class="card-title">MEMORY_MATRIX</div>
+            <div class="card-desc">Cocokkan istilah hardware dan fungsinya.</div>
+        </a>
+    </div>
+</body>
+</html>

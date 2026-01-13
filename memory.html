@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMORY // MATRIX</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg: #09090b; 
+            --yellow: #f1c40f; 
+            --green: #00ff9d;
+            --dim-text: #555;
+        }
+        
+        body { 
+            font-family: 'JetBrains Mono', monospace; 
+            background: var(--bg); 
+            color: #fff; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+        
+        /* Header Style */
+        .header { 
+            width: 100%; 
+            max-width: 800px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 2px solid var(--yellow); 
+            padding-bottom: 15px; 
+            margin-bottom: 30px; 
+        }
+        h1 { margin: 0; color: var(--yellow); letter-spacing: -1px; }
+        
+        .back-btn { 
+            text-decoration: none; 
+            color: #888; 
+            border: 1px solid #444; 
+            padding: 8px 20px; 
+            border-radius: 4px; 
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .back-btn:hover { background: #fff; color: #000; }
+
+        /* Grid Layout */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+            width: 100%; 
+            max-width: 800px; 
+            perspective: 1000px; /* Penting untuk efek 3D flip */
+        }
+        
+        /* Card Style */
+        .card {
+            background: #18181b; 
+            height: 120px; 
+            border: 2px solid #333; 
+            border-radius: 8px; 
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Front & Back Faces */
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-radius: 6px;
+        }
+
+        /* Tampilan Depan (Tertutup) */
+        .front {
+            background: #222;
+            color: var(--dim-text);
+            font-size: 2rem; /* Ukuran simbol // */
+        }
+        
+        /* Tampilan Belakang (Terbuka/Isi) */
+        .back {
+            background: var(--yellow);
+            color: #000;
+            transform: rotateY(180deg);
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+        }
+
+        /* Class saat kartu dibuka */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* --- VISUAL FEEDBACK SAAT BENAR (UPDATE) --- */
+        @keyframes matchPop {
+            0% { transform: rotateY(180deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.1); box-shadow: 0 0 30px var(--green); border-color: var(--green); }
+            100% { transform: rotateY(180deg) scale(1); opacity: 0.6; border-color: var(--green); }
+        }
+
+        .card.matched .back {
+            background: #000; /* Jadi hitam */
+            color: var(--green); /* Teks jadi hijau neon */
+            border: 2px solid var(--green);
+            animation: matchPop 0.5s ease-out forwards;
+        }
+
+        /* Status Bar di bawah */
+        #system-log {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            height: 30px;
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* Responsif untuk HP */
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+            .card { height: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MEMORY_MATRIX</h1>
+        <a href="index.html" class="back-btn">EXIT</a>
+    </div>
+
+    <div class="grid" id="gameGrid"></div>
+    
+    <div id="system-log">SYSTEM READY... WAITING INPUT</div>
+
+    <script>
+        // Data Soal (Pasangan)
+        // Tips: Pastikan ID sama untuk pasangan yang benar
+        const data = [
+            { id: 1, content: "CPU", type: "term" },         { id: 1, content: "Otak Pemroses", type: "desc" },
+            { id: 2, content: "RAM", type: "term" },         { id: 2, content: "Simpan Sementara", type: "desc" },
+            { id: 3, content: "SSD", type: "term" },         { id: 3, content: "Simpan Data Cepat", type: "desc" },
+            { id: 4, content: "Motherboard", type: "term" }, { id: 4, content: "Papan Sirkuit Utama", type: "desc" },
+            { id: 5, content: "PSU", type: "term" },         { id: 5, content: "Sumber Daya", type: "desc" },
+            { id: 6, content: "GPU", type: "term" },         { id: 6, content: "Olah Grafis", type: "desc" },
+        ];
+
+        // Acak Kartu
+        let cardsData = [...data].sort(() => Math.random() - 0.5);
+        
+        let flippedCards = [];
+        let matchedCount = 0;
+        let lockBoard = false; // Mencegah klik saat animasi berjalan
+
+        const grid = document.getElementById('gameGrid');
+        const log = document.getElementById('system-log');
+
+        // Render Kartu
+        cardsData.forEach(item => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.id = item.id;
+            card.dataset.content = item.content; // Untuk log
+
+            // Struktur HTML Kartu (Depan & Belakang)
+            card.innerHTML = `
+                <div class="face front">//</div>
+                <div class="face back">${item.content}</div>
+            `;
+
+            card.addEventListener('click', () => flipCard(card));
+            grid.appendChild(card);
+        });
+
+        function flipCard(card) {
+            // Cegah klik jika board dikunci, atau kartu sudah terbuka/cocok
+            if (lockBoard) return;
+            if (card === flippedCards[0]) return; // Cegah klik kartu yang sama 2x
+            if (card.classList.contains('matched')) return;
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            // Jika sudah 2 kartu terbuka, cek kecocokan
+            if (flippedCards.length === 2) {
+                checkForMatch();
+            }
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            const isMatch = card1.dataset.id === card2.dataset.id;
+
+            if (isMatch) {
+                disableCards(card1, card2);
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards(card1, card2) {
+            lockBoard = true;
+            
+            // Beri jeda sedikit agar animasi flip selesai dulu baru efek match
+            setTimeout(() => {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                
+                // Update Log dengan efek keren
+                const term = card1.dataset.content; 
+                log.innerHTML = `<span style="color:var(--green)">>> MATCH CONFIRMED: DATA LINKED!</span>`;
+                
+                matchedCount += 2;
+                flippedCards = [];
+                lockBoard = false;
+
+                // Cek Kemenangan
+                if (matchedCount === cardsData.length) {
+                    setTimeout(() => {
+                        log.innerHTML = "✅ SYSTEM UNLOCKED. ALL DATA RECOVERED.";
+                        document.querySelector('.header').style.borderColor = "var(--green)";
+                        document.querySelector('h1').style.color = "var(--green)";
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            log.innerHTML = `<span style="color:#ff5555">>> MISMATCH. RESETTING...</span>`;
+            
+            setTimeout(() => {
+                flippedCards.forEach(card => card.classList.remove('flipped'));
+                flippedCards = [];
+                lockBoard = false;
+                log.innerHTML = "WAITING INPUT...";
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

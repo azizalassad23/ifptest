@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG // HUNTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #09090b; --purple: #bd00ff; --red: #ff0055; }
+        body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: #fff; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .header { width: 100%; max-width: 800px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--purple); padding-bottom: 10px; margin-bottom: 30px; }
+        h1 { margin: 0; color: var(--purple); }
+        .back-btn { text-decoration: none; color: #888; border: 1px solid #444; padding: 5px 15px; border-radius: 4px; }
+
+        .console { background: #18181b; padding: 20px; border-radius: 8px; width: 100%; max-width: 800px; border: 1px solid #333; position: relative; }
+        .console::before { content: "main.py"; position: absolute; top: -10px; left: 20px; background: var(--purple); font-size: 0.8rem; padding: 2px 8px; font-weight: bold; }
+
+        .line { padding: 15px; border-bottom: 1px solid #27272a; cursor: pointer; display: flex; font-size: 1.2rem; transition: 0.2s; }
+        .line:hover { background: #27272a; }
+        .num { color: #555; margin-right: 15px; width: 30px; }
+        .code { color: #d4d4d4; }
+        
+        .wrong { background: rgba(0, 255, 157, 0.1) !important; border-left: 4px solid #00ff9d; }
+        .correct { background: rgba(255, 0, 85, 0.2) !important; border-left: 4px solid var(--red); text-decoration: line-through; }
+        
+        #msg { margin-top: 20px; height: 30px; font-size: 1.2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BUG_HUNTER</h1>
+        <a href="index.html" class="back-btn">EXIT</a>
+    </div>
+    <p>TAP THE LINE WITH SYNTAX ERROR</p>
+
+    <div class="console" id="editor"></div>
+    <div id="msg"></div>
+
+    <script>
+        const lines = [
+            "def check_score(score):",
+            "    if score >= 75:",
+            "        print('Lulus')",
+            "    else",
+            "        print('Remedial')"
+        ];
+        const errorIdx = 3; // Index 3 is "else" missing colon
+
+        const editor = document.getElementById('editor');
+        lines.forEach((txt, i) => {
+            let div = document.createElement('div');
+            div.className = 'line';
+            div.innerHTML = `<span class="num">${i+1}</span><span class="code">${txt}</span>`;
+            div.onclick = () => {
+                if(i === errorIdx) {
+                    div.classList.add('correct');
+                    document.getElementById('msg').innerHTML = "<span style='color:#00ff9d'>BUG CAUGHT! Missing ':'</span>";
+                } else {
+                    div.classList.add('wrong');
+                    document.getElementById('msg').innerHTML = "<span style='color:#ff0055'>CLEAN CODE. KEEP LOOKING.</span>";
+                    setTimeout(() => div.classList.remove('wrong'), 800);
+                }
+            };
+            editor.appendChild(div);
+        });
+    </script>
+</body>
+</html>
