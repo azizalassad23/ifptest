@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNTAX // GAP</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <style>
+        :root { --bg: #09090b; --orange: #ff9f43; }
+        body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        .home-btn { position: fixed; top: 20px; left: 20px; background: #09090b; color: #fff; border: 1px solid #333; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 800; display: flex; gap: 10px; transition: 0.3s; z-index: 99; }
+        .home-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+        .header { margin-top: 60px; margin-bottom: 30px; border-bottom: 2px solid var(--orange); padding-bottom: 10px; width: 100%; max-width: 700px; text-align: center; }
+        h1 { margin: 0; color: var(--orange); }
+
+        /* Area Kode dengan Lubang */
+        .code-area {
+            background: #1e1e1e; padding: 30px; border-radius: 12px;
+            font-size: 1.5rem; line-height: 2.5rem; width: 100%; max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 40px;
+        }
+
+        .drop-zone {
+            display: inline-block; width: 100px; height: 40px; 
+            background: #333; border: 2px dashed #666; 
+            vertical-align: middle; border-radius: 6px; 
+            margin: 0 5px; text-align: center; color: var(--orange);
+        }
+
+        /* Area Pilihan Jawaban */
+        .options-area {
+            display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
+            background: #18181b; padding: 20px; border-radius: 12px; border: 1px solid #333;
+        }
+
+        .draggable-item {
+            background: var(--orange); color: #000; padding: 10px 20px;
+            border-radius: 6px; font-weight: bold; cursor: grab; font-size: 1.2rem;
+        }
+
+        #checkBtn { margin-top: 30px; background: transparent; border: 2px solid var(--orange); color: var(--orange); padding: 15px 50px; font-size: 1.2rem; cursor: pointer; border-radius: 50px; font-weight: bold; transition: 0.3s; }
+        #checkBtn:hover { background: var(--orange); color: #000; }
+        
+        #result { margin-top: 20px; font-size: 1.2rem; font-weight: bold; height: 30px; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-btn"><span>🏠</span> HUB</a>
+    
+    <div class="header"><h1>SYNTAX_GAP</h1></div>
+    <p>SERET KEYWORD YANG TEPAT KE DALAM KODE</p>
+
+    <div class="code-area" id="codeContainer">
+        <span id="q-part1"></span> 
+        <div id="target1" class="drop-zone"></div> 
+        <span id="q-part2"></span>
+    </div>
+
+    <div id="source" class="options-area">
+        </div>
+
+    <button id="checkBtn" onclick="checkAnswer()">CHECK SYNTAX</button>
+    <div id="result"></div>
+    <button id="nextBtn" style="display:none; margin-top:10px; background:#333; color:#fff; border:none; padding:10px 20px; cursor:pointer;" onclick="loadLevel()">NEXT >></button>
+
+    <script>
+        const levels = [
+            { 
+                textPre: "umur = 17<br>", textPost: " umur >= 17:<br>&nbsp;&nbsp;print('KTP')", 
+                answer: "if", 
+                options: ["if", "for", "else", "def"] 
+            },
+            { 
+                textPre: "murid = ['Ali', 'Budi']<br>", textPost: " x in murid:<br>&nbsp;&nbsp;print(x)", 
+                answer: "for", 
+                options: ["while", "if", "for", "class"] 
+            },
+            { 
+                textPre: "for i ", textPost: " range(5):<br>&nbsp;&nbsp;print(i)", 
+                answer: "in", 
+                options: ["in", "on", "at", "to"] 
+            },
+            { 
+                textPre: "x = 10<br>if x > 5:<br>&nbsp;&nbsp;print('Besar')<br>", textPost: ":<br>&nbsp;&nbsp;print('Kecil')", 
+                answer: "else", 
+                options: ["elif", "else", "stop", "then"] 
+            }
+        ];
+
+        let currentLevel = 0;
+
+        function loadLevel() {
+            const data = levels[currentLevel];
+            
+            // Reset UI
+            document.getElementById('result').innerText = "";
+            document.getElementById('nextBtn').style.display = "none";
+            document.getElementById('target1').innerHTML = ""; // Kosongkan target
+            document.getElementById('checkBtn').style.display = "inline-block";
+
+            // Set Soal
+            document.getElementById('q-part1').innerHTML = data.textPre;
+            document.getElementById('q-part2').innerHTML = data.textPost;
+
+            // Set Pilihan (Acak)
+            const src = document.getElementById('source');
+            src.innerHTML = "";
+            let opts = [...data.options].sort(() => Math.random() - 0.5);
+            
+            opts.forEach(opt => {
+                let div = document.createElement('div');
+                div.className = 'draggable-item';
+                div.innerText = opt;
+                src.appendChild(div);
+            });
+
+            // Init Sortable
+            new Sortable(document.getElementById('source'), { group: 'shared', animation: 150 });
+            new Sortable(document.getElementById('target1'), { group: 'shared', animation: 150, max: 1 }); // Max 1 item
+        }
+
+        function checkAnswer() {
+            const target = document.getElementById('target1');
+            const item = target.querySelector('.draggable-item');
+            const result = document.getElementById('result');
+
+            if (!item) {
+                result.innerHTML = "<span style='color:#ff5555'>⚠️ KOSONG! Isi dulu bagian yang hilang.</span>";
+                return;
+            }
+
+            if (item.innerText === levels[currentLevel].answer) {
+                result.innerHTML = "<span style='color:#00ff9d'>✅ SYNTAX CORRECT!</span>";
+                document.getElementById('checkBtn').style.display = "none";
+                
+                // Cek if last level
+                if (currentLevel < levels.length - 1) {
+                    document.getElementById('nextBtn').style.display = "inline-block";
+                    currentLevel++;
+                } else {
+                    result.innerHTML += " <br>🎉 SEMUA LEVEL SELESAI!";
+                }
+            } else {
+                result.innerHTML = "<span style='color:#ff0055'>❌ SYNTAX ERROR. Coba kata kunci lain.</span>";
+            }
+        }
+
+        loadLevel();
+    </script>
+</body>
+</html>
