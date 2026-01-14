@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUB // INFORMATIKA</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
+    <title>PYTHON // MASTERCLASS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #09090b;
             --card-bg: #18181b;
-            --neon-green: #00ff9d;
-            --neon-purple: #bd00ff;
-            --neon-blue: #00f3ff;
-            --neon-yellow: #f1c40f;
+            --neon-green: #00ff9d; 
+            --neon-purple: #bd00ff; 
+            --neon-blue: #00f3ff;   
+            --neon-orange: #ff9f43; 
+            --text-gray: #a1a1aa;
         }
 
         body {
@@ -20,39 +21,140 @@
             background-color: var(--bg-dark);
             color: #fff;
             margin: 0;
-            min-height: 100vh;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            /* Efek Grid Halus */
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
+            scroll-behavior: smooth;
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            padding: 80px 20px 40px;
+            width: 100%;
+            max-width: 900px;
         }
 
         h1 {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 10px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+            font-size: 3.5rem;
+            margin: 0;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.2);
             letter-spacing: -2px;
         }
 
+        .subtitle { color: var(--neon-blue); font-size: 1.2rem; margin-top: 10px; letter-spacing: 2px; }
+
+        /* --- MATERI SECTION --- */
+        .material-container {
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .topic-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-left: 5px solid #555;
+            padding: 30px;
+            border-radius: 0 12px 12px 0;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        
+        .topic-card:hover { transform: translateX(10px); }
+
+        .topic-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .topic-desc { font-size: 1.1rem; line-height: 1.6; color: #d4d4d8; margin-bottom: 20px; }
+
+        /* Code Snippet Style */
+        .code-snippet {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            border: 1px solid #333;
+            color: #e4e4e7;
+            position: relative;
+        }
+        .code-snippet::before {
+            content: "example.py";
+            position: absolute;
+            top: -10px; right: 15px;
+            background: #333;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Highlight Syntax sederhana */
+        .kwd { color: var(--neon-purple); font-weight: bold; } /* Keywords: if, else, for */
+        .str { color: var(--neon-green); } /* Strings */
+        .num { color: var(--neon-blue); } /* Numbers */
+        .cmt { color: #666; font-style: italic; } /* Comments */
+
+        /* Warna Border Topic */
+        .border-blue { border-color: var(--neon-blue); }
+        .border-green { border-color: var(--neon-green); }
+        .border-orange { border-color: var(--neon-orange); }
+
+        /* --- DIVIDER "START GAME" --- */
+        .divider-area {
+            width: 100%;
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        .divider-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .start-label {
+            background: var(--bg-dark);
+            padding: 10px 30px;
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        /* --- GAME GRID (DARI KODE SEBELUMNYA) --- */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 25px;
             max-width: 1000px;
             width: 90%;
+            margin-bottom: 100px; /* Ruang bawah */
         }
 
         .game-card {
             background: var(--card-bg);
             border: 1px solid #333;
             border-radius: 12px;
-            padding: 25px;
+            padding: 30px;
             text-decoration: none;
             position: relative;
             transition: 0.3s;
@@ -63,55 +165,132 @@
 
         .game-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 0 20px var(--shadow-color);
+            box-shadow: 0 0 25px var(--shadow-color);
             border-color: var(--active-color);
         }
 
-        .icon { font-size: 2.5rem; margin-bottom: 10px; }
-        
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 5px;
-        }
+        .icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .card-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+        .card-desc { color: #888; font-size: 0.95rem; line-height: 1.5; }
 
-        .card-desc { color: #888; font-size: 0.9rem; line-height: 1.4; }
-
-        /* Varian Warna */
+        .c-predict { --active-color: var(--neon-blue); --shadow-color: rgba(0, 243, 255, 0.2); }
         .c-algo { --active-color: var(--neon-green); --shadow-color: rgba(0, 255, 157, 0.2); }
         .c-bug { --active-color: var(--neon-purple); --shadow-color: rgba(189, 0, 255, 0.2); }
-        .c-bin { --active-color: var(--neon-blue); --shadow-color: rgba(0, 243, 255, 0.2); }
-        .c-mem { --active-color: var(--neon-yellow); --shadow-color: rgba(241, 196, 15, 0.2); }
+        .c-fill { --active-color: var(--neon-orange); --shadow-color: rgba(255, 159, 67, 0.2); }
+
+        /* Tombol Scroll Down */
+        .scroll-hint {
+            margin-top: 20px;
+            color: #888;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
         @media (max-width: 768px) { .grid-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <h1>MAINFRAME ACCESS</h1>
-    <p style="color:#666; margin-bottom: 40px;">SELECT YOUR MISSION MODULE</p>
+
+    <header>
+        <h1>PYTHON // FUNDAMENTALS</h1>
+        <div class="subtitle">LEARN. CODE. EXECUTE.</div>
+        <div class="scroll-hint">▼ SCROLL TO LEARN ▼</div>
+    </header>
+
+    <div class="material-container">
+
+        <div class="topic-card border-blue">
+            <div class="topic-title" style="color:var(--neon-blue)">
+                <span>01</span> VARIABLE & DATA
+            </div>
+            <div class="topic-desc">
+                Variabel adalah "wadah" untuk menyimpan data. Di Python, kita tidak perlu mendeklarasikan tipe data secara manual.
+                <br><br>
+                Tipe data umum:
+                <ul>
+                    <li><strong>String:</strong> Teks (diapit kutip ' ' atau " ").</li>
+                    <li><strong>Integer:</strong> Bilangan bulat.</li>
+                    <li><strong>Float:</strong> Bilangan desimal.</li>
+                </ul>
+            </div>
+            <div class="code-snippet">
+                nama = <span class="str">"Siswa Cerdas"</span> <span class="cmt"># String</span><br>
+                umur = <span class="num">16</span> <span class="cmt"># Integer</span><br>
+                tinggi = <span class="num">170.5</span> <span class="cmt"># Float</span><br>
+                <br>
+                print(nama)
+            </div>
+        </div>
+
+        <div class="topic-card border-green">
+            <div class="topic-title" style="color:var(--neon-green)">
+                <span>02</span> LOGIC CONTROL (IF/ELSE)
+            </div>
+            <div class="topic-desc">
+                Komputer mengambil keputusan menggunakan logika perbandingan. <br>
+                PENTING: Python menggunakan <strong>Indentasi</strong> (spasi di awal baris) untuk menandai blok kode.
+            </div>
+            <div class="code-snippet">
+                nilai = <span class="num">80</span><br>
+                <br>
+                <span class="kwd">if</span> nilai >= <span class="num">75</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="str">"Lulus Kompeten"</span>)<br>
+                <span class="kwd">else</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="str">"Perlu Remedial"</span>)
+            </div>
+        </div>
+
+        <div class="topic-card border-orange">
+            <div class="topic-title" style="color:var(--neon-orange)">
+                <span>03</span> LOOPS (PERULANGAN)
+            </div>
+            <div class="topic-desc">
+                Jangan menulis kode yang sama berulang kali. Gunakan <code>for</code> loop untuk melakukan tugas otomatisasi.
+                <br>Fungsi <code>range(5)</code> artinya mengulang sebanyak 5 kali (mulai dari 0 sampai 4).
+            </div>
+            <div class="code-snippet">
+                <span class="cmt"># Mengulang 5 kali</span><br>
+                <span class="kwd">for</span> i <span class="kwd">in</span> range(<span class="num">5</span>):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="str">"Saya suka Coding!"</span>)<br>
+                <br>
+                <span class="cmt"># Output:</span><br>
+                <span class="cmt"># Saya suka Coding! (x5)</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="divider-area">
+        <div class="divider-line"></div>
+        <div class="start-label">START TRAINING SIMULATION</div>
+        <div class="divider-line" style="margin-top:20px;"></div>
+    </div>
 
     <div class="grid-container">
+        <a href="predict.html" class="game-card c-predict">
+            <div class="icon">🔮</div>
+            <div class="card-title">PY_PREDICTOR</div>
+            <div class="card-desc">Uji pemahaman Materi 01. Tebak output dari variabel & aritmatika.</div>
+        </a>
+
         <a href="algo.html" class="game-card c-algo">
             <div class="icon">🧩</div>
-            <div class="card-title">ALGO_REORDER</div>
-            <div class="card-desc">Susun logika kode yang teracak agar sistem berjalan.</div>
+            <div class="card-title">ALGO_SORT</div>
+            <div class="card-desc">Uji Materi 02 & 03. Susun blok kode If/Else & Loop agar urut.</div>
         </a>
+
         <a href="bug.html" class="game-card c-bug">
             <div class="icon">🐞</div>
             <div class="card-title">BUG_HUNTER</div>
-            <div class="card-desc">Analisis kode dan temukan Syntax Error.</div>
+            <div class="card-desc">Melatih ketelitian mata. Cari kesalahan penulisan (Syntax Error).</div>
         </a>
-        <a href="binary.html" class="game-card c-bin">
-            <div class="icon">101</div>
-            <div class="card-title">BINARY_BLITZ</div>
-            <div class="card-desc">Konversi desimal ke biner dengan saklar bit.</div>
-        </a>
-        <a href="memory.html" class="game-card c-mem">
-            <div class="icon">🧠</div>
-            <div class="card-title">MEMORY_MATRIX</div>
-            <div class="card-desc">Cocokkan istilah hardware dan fungsinya.</div>
+
+        <a href="fill.html" class="game-card c-fill">
+            <div class="icon">📝</div>
+            <div class="card-title">SYNTAX_GAP</div>
+            <div class="card-desc">Uji Hafalan Keyword. Pasang 'if', 'for', 'in' pada tempatnya.</div>
         </a>
     </div>
+
 </body>
 </html>
