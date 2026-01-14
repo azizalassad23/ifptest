@@ -8,122 +8,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <style>
         :root { --bg: #09090b; --green: #00ff9d; --red: #ff0055; --panel-bg: #18181b; }
-        
-        body {
-            font-family: 'JetBrains Mono', monospace; 
-            background: var(--bg); 
-            color: #e4e4e7;
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh;
-        }
-
-        .header { 
-            width: 100%; 
-            max-width: 1000px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-            border-bottom: 1px solid #333; 
-            padding-bottom: 10px; 
-        }
-        
-        .back-btn { 
-            text-decoration: none; 
-            color: #666; 
-            border: 1px solid #444; 
-            padding: 5px 15px; 
-            border-radius: 4px; 
-            transition: 0.3s;
-        }
+        body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: #e4e4e7; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .header { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .back-btn { text-decoration: none; color: #666; border: 1px solid #444; padding: 5px 15px; border-radius: 4px; transition: 0.3s; }
         .back-btn:hover { color: #fff; border-color: #fff; }
-        
-        /* Layout Container */
-        .container { 
-            display: flex; 
-            gap: 20px; 
-            width: 100%; 
-            max-width: 1000px; 
-            height: 60vh; /* Tinggi tetap agar scroll berfungsi */
-        }
-        
-        .panel { 
-            flex: 1; 
-            background: var(--panel-bg); 
-            border: 1px solid #333; 
-            border-radius: 8px; 
-            padding: 15px; 
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .panel h3 { 
-            margin-top: 0; 
-            color: var(--green); 
-            border-bottom: 1px solid #333; 
-            padding-bottom: 10px; 
-            margin-bottom: 10px;
-        }
-        
-        /* --- PERBAIKAN PENTING DI SINI --- */
-        /* Kita harus memastikan #source dan #target punya tinggi meski kosong */
-        #source, #target {
-            flex: 1; /* Mengisi sisa ruang panel */
-            min-height: 100px; /* Jaga-jaga agar tidak 0px */
-            overflow-y: auto; /* Scroll jika konten panjang */
-            padding-bottom: 50px; /* Ruang ekstra di bawah untuk kemudahan drop */
-        }
-        
-        /* Style Blok Kode */
-        .code-block { 
-            background: #27272a; 
-            border: 1px solid #3f3f46; 
-            color: var(--green); 
-            padding: 15px; 
-            margin-bottom: 10px; 
-            cursor: grab; 
-            border-radius: 4px; 
-            font-size: 1.1rem;
-            /* Mencegah teks bisa diblok saat drag */
-            user-select: none; 
-        }
-        
-        .code-block:active { 
-            cursor: grabbing; 
-            transform: scale(0.98); 
-            border-color: var(--green);
-        }
-
-        /* Visual saat item didrag di atas target */
-        .sortable-ghost {
-            opacity: 0.4;
-            background-color: #333;
-            border: 1px dashed var(--green);
-        }
-        
-        #checkBtn { 
-            margin-top: 20px; 
-            background: transparent; 
-            border: 2px solid var(--green); 
-            color: var(--green); 
-            padding: 15px 50px; 
-            font-family: inherit; 
-            font-size: 1.2rem; 
-            font-weight: bold;
-            cursor: pointer; 
-            transition: 0.3s; 
-        }
-        
-        #checkBtn:hover { 
-            background: var(--green); 
-            color: #000; 
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
-        }
-        
-        #status { margin-top: 15px; font-weight: bold; font-size: 1.2rem; }
+        .container { display: flex; gap: 20px; width: 100%; max-width: 1000px; height: 500px; }
+        .panel { flex: 1; background: var(--panel-bg); border: 1px solid #333; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; }
+        .panel h3 { margin-top: 0; color: var(--green); border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 10px; }
+        #source, #target { flex: 1; min-height: 100px; overflow-y: auto; padding-bottom: 50px; }
+        .code-block { background: #27272a; border: 1px solid #3f3f46; color: var(--green); padding: 15px; margin-bottom: 10px; cursor: grab; border-radius: 4px; font-size: 1.1rem; user-select: none; }
+        .code-block:active { cursor: grabbing; transform: scale(0.98); border-color: var(--green); }
+        .sortable-ghost { opacity: 0.4; background-color: #333; border: 1px dashed var(--green); }
+        #checkBtn { margin-top: 20px; background: transparent; border: 2px solid var(--green); color: var(--green); padding: 15px 50px; font-family: inherit; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        #checkBtn:hover { background: var(--green); color: #000; box-shadow: 0 0 20px rgba(0, 255, 157, 0.4); }
+        #status { margin-top: 15px; font-weight: bold; font-size: 1.2rem; min-height: 30px; }
+        #nextBtn, #restartBtn { margin-top: 15px; background: #333; color: #fff; border: none; padding: 10px 20px; cursor: pointer; display: none; }
+        #progress { width: 100%; max-width: 1000px; color: #888; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -131,92 +31,145 @@
         <h1>ALGO_REORDER</h1>
         <a href="index.html" class="back-btn">EXIT</a>
     </div>
+    <div id="progress">LOADING...</div>
 
     <div class="container">
         <div class="panel">
             <h3>SOURCE_BUFFER</h3>
             <div id="source"></div>
         </div>
-        
         <div class="panel" id="targetPanel">
-            <h3>EXECUTION_STACK</h3>
+            <h3>EXECUTION_STACK (Drop Here)</h3>
             <div id="target"></div>
         </div>
     </div>
 
     <button id="checkBtn" onclick="check()">COMPILE & RUN</button>
     <div id="status"></div>
+    <button id="nextBtn" onclick="nextPuzzle()">NEXT ALGORITHM >></button>
+    <button id="restartBtn" onclick="initGame()">RESTART SESSION</button>
 
     <script>
-        // --- DATA SOAL ---
-        const correct = [
-            "total = 0",
-            "angka = [10, 20, 30]",
-            "for x in angka:",
-            "total = total + x",
-            "print(total)"
+        // --- BANK SOAL ALGORITMA ---
+        // Masukkan urutan yang BENAR di dalam array
+        const algoBank = [
+            {
+                id: 1, title: "Hitung Total",
+                blocks: ["total = 0", "angka = [10, 20, 30]", "for x in angka:", "    total = total + x", "print(total)"]
+            },
+            {
+                id: 2, title: "Cek Ganjil Genap",
+                blocks: ["x = 15", "if x % 2 == 0:", "    print('Genap')", "else:", "    print('Ganjil')"]
+            },
+            {
+                id: 3, title: "Tukar Variabel (Swap)",
+                blocks: ["a = 5", "b = 10", "temp = a", "a = b", "b = temp"]
+            },
+            {
+                id: 4, title: "Looping Mundur",
+                blocks: ["i = 5", "while i > 0:", "    print(i)", "    i = i - 1", "print('Selesai')"]
+            },
+            {
+                id: 5, title: "Mencari Nilai Max",
+                blocks: ["data = [3, 1, 9, 2]", "max_val = data[0]", "for num in data:", "    if num > max_val:", "        max_val = num"]
+            },
+            {
+                id: 6, title: "Input & Output",
+                blocks: ["nama = input('Nama:')", "print('Halo ' + nama)", "umur = 17", "print(umur)", "print('Tahun')"]
+            },
+            {
+                id: 7, title: "Hitung Luas Persegi",
+                blocks: ["sisi = 10", "luas = sisi * sisi", "print('Luas adalah:')", "print(luas)"]
+            }
         ];
 
-        // Init Data
-        const src = document.getElementById('source');
-        let items = [...correct].sort(() => Math.random() - 0.5);
-        
-        items.forEach(t => {
-            let d = document.createElement('div');
-            d.className = 'code-block'; 
-            d.innerText = t; 
-            src.appendChild(d);
-        });
+        let currentPuzzles = [];
+        let currentIndex = 0;
 
-        // --- KONFIGURASI DRAG & DROP ---
-        // Group 'shared' memungkinkan perpindahan antar list
-        new Sortable(document.getElementById('source'), { 
-            group: 'shared', 
-            animation: 150,
-            ghostClass: 'sortable-ghost'
-        });
-        
-        new Sortable(document.getElementById('target'), { 
-            group: 'shared', 
-            animation: 150,
-            ghostClass: 'sortable-ghost'
-        });
+        function initGame() {
+            // Pilih 5 soal acak
+            currentPuzzles = [...algoBank].sort(() => Math.random() - 0.5).slice(0, 5);
+            currentIndex = 0;
+            document.getElementById('restartBtn').style.display = 'none';
+            loadPuzzle();
+        }
 
-        // --- CEK JAWABAN ---
+        function loadPuzzle() {
+            const p = currentPuzzles[currentIndex];
+            document.getElementById('progress').innerText = `ALGORITMA ${currentIndex + 1} / 5 : ${p.title}`;
+            document.getElementById('status').innerHTML = "";
+            document.getElementById('checkBtn').style.display = "inline-block";
+            document.getElementById('nextBtn').style.display = "none";
+            document.getElementById('targetPanel').style.borderColor = "#333";
+            document.getElementById('targetPanel').style.boxShadow = "none";
+
+            // Reset Source & Target
+            const src = document.getElementById('source');
+            const tgt = document.getElementById('target');
+            src.innerHTML = "";
+            tgt.innerHTML = "";
+
+            // Acak blok untuk ditaruh di Source
+            let shuffledBlocks = [...p.blocks].sort(() => Math.random() - 0.5);
+            
+            shuffledBlocks.forEach(txt => {
+                let d = document.createElement('div');
+                d.className = 'code-block';
+                d.innerText = txt;
+                src.appendChild(d);
+            });
+
+            // Init Sortable (biar bisa drag drop)
+            new Sortable(src, { group: 'shared', animation: 150 });
+            new Sortable(tgt, { group: 'shared', animation: 150 });
+        }
+
         function check() {
+            const correctBlocks = currentPuzzles[currentIndex].blocks;
             const userBlocks = document.querySelectorAll('#target .code-block');
             const panel = document.getElementById('targetPanel');
             const stat = document.getElementById('status');
             
-            // Validasi Jumlah
-            if(userBlocks.length !== correct.length) {
-                stat.innerHTML = "<span style='color:#ffaa00'>⚠️ INCOMPLETE CODE: Move all blocks to right!</span>"; 
+            // Cek jumlah
+            if(userBlocks.length !== correctBlocks.length) {
+                stat.innerHTML = "<span style='color:#ffaa00'>⚠️ INCOMPLETE: Pindahkan semua blok ke kanan!</span>"; 
                 return;
             }
             
-            // Validasi Urutan
+            // Cek urutan
             let ok = true;
             userBlocks.forEach((el, i) => { 
-                if(el.innerText !== correct[i]) ok = false; 
+                if(el.innerText !== correctBlocks[i]) ok = false; 
             });
 
             if(ok) {
-                stat.innerHTML = "<span style='color:#00ff9d'>✅ SYSTEM SECURE. OUTPUT: 60</span>";
+                stat.innerHTML = "<span style='color:#00ff9d'>✅ ALGORITHM CORRECT. System Running...</span>";
                 panel.style.borderColor = "#00ff9d";
                 panel.style.boxShadow = "0 0 20px rgba(0, 255, 157, 0.2)";
-            } else {
-                stat.innerHTML = "<span style='color:#ff0055'>❌ SYNTAX ERROR: Wrong Order</span>";
-                panel.style.borderColor = "#ff0055";
+                document.getElementById('checkBtn').style.display = "none";
                 
-                // Efek getar
+                if (currentIndex < 4) {
+                    document.getElementById('nextBtn').style.display = "inline-block";
+                } else {
+                    stat.innerHTML += "<br>🎉 SEMUA TANTANGAN SELESAI!";
+                    document.getElementById('restartBtn').style.display = "inline-block";
+                }
+            } else {
+                stat.innerHTML = "<span style='color:#ff0055'>❌ LOGIC ERROR: Urutan salah.</span>";
+                panel.style.borderColor = "#ff0055";
                 panel.animate([
-                    { transform: 'translateX(0)' }, 
-                    { transform: 'translateX(-5px)' }, 
-                    { transform: 'translateX(5px)' }, 
-                    { transform: 'translateX(0)' }
+                    { transform: 'translateX(0)' }, { transform: 'translateX(-5px)' }, 
+                    { transform: 'translateX(5px)' }, { transform: 'translateX(0)' }
                 ], { duration: 300 });
             }
         }
+
+        function nextPuzzle() {
+            currentIndex++;
+            loadPuzzle();
+        }
+
+        initGame();
     </script>
 </body>
 </html>
