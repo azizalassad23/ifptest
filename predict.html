@@ -7,9 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg: #09090b; --blue: #00f3ff; }
+        :root { --bg: #09090b; --blue: #00f3ff; --green: #00ff9d; --red: #ff0055; }
         
-        /* Reset margin agar tidak ada gap putih */
         body { 
             font-family: 'JetBrains Mono', monospace; 
             background: var(--bg); 
@@ -18,12 +17,11 @@
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            margin: 0; 
-            padding: 20px;
+            margin: 0; padding: 20px;
             box-sizing: border-box;
         }
-        
-        /* Tombol Home */
+
+        /* --- UI ELEMENTS --- */
         .home-btn { 
             position: fixed; top: 20px; left: 20px; 
             background: #09090b; color: #fff; border: 1px solid #333; 
@@ -33,115 +31,241 @@
         .home-btn:hover { border-color: var(--blue); color: var(--blue); }
 
         .header { 
-            margin-top: 60px; margin-bottom: 30px; 
+            margin-top: 60px; margin-bottom: 20px; 
             border-bottom: 2px solid var(--blue); padding-bottom: 10px; 
             width: 100%; max-width: 600px; text-align: center; 
         }
         h1 { margin: 0; color: var(--blue); }
+        .progress { color: #888; font-size: 0.9rem; margin-top: 5px; }
+
+        /* --- GAME CONTAINER --- */
+        #game-interface { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
 
         .code-display {
-            background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 30px;
-            width: 100%; max-width: 600px; font-size: 1.5rem; margin-bottom: 40px;
+            background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 25px;
+            width: 100%; font-size: 1.4rem; margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative;
-            text-align: left; /* Kode harus rata kiri */
+            text-align: left; box-sizing: border-box;
         }
         .code-display::before { 
-            content: "input.py"; position: absolute; top: -10px; right: 20px; 
+            content: "main.py"; position: absolute; top: -10px; right: 20px; 
             background: var(--blue); color: #000; padding: 2px 10px; 
             font-size: 0.8rem; font-weight: bold; border-radius: 4px;
         }
 
         .options-grid { 
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; 
-            width: 100%; max-width: 600px; 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; 
         }
         
         .opt-btn {
-            background: #18181b; border: 2px solid #333; color: #fff; padding: 20px;
-            font-size: 1.5rem; cursor: pointer; border-radius: 10px; font-family: inherit;
+            background: #18181b; border: 2px solid #333; color: #fff; padding: 15px;
+            font-size: 1.3rem; cursor: pointer; border-radius: 10px; font-family: inherit;
             transition: 0.2s;
         }
         .opt-btn:hover { border-color: #777; background: #222; }
-        .opt-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+        .opt-btn:disabled { cursor: not-allowed; opacity: 0.6; }
         
-        .correct { background: #00ff9d !important; color: #000 !important; border-color: #00ff9d !important; }
-        .wrong { background: #ff0055 !important; color: #fff !important; border-color: #ff0055 !important; opacity: 0.5; }
+        .correct { background: var(--green) !important; color: #000 !important; border-color: var(--green) !important; }
+        .wrong { background: var(--red) !important; color: #fff !important; border-color: var(--red) !important; opacity: 0.5; }
 
-        #feedback { min-height: 30px; margin-top: 20px; font-weight: bold; font-size: 1.2rem; }
+        #feedback { min-height: 30px; margin-top: 20px; font-weight: bold; font-size: 1.2rem; text-align: center; }
         
         #nextBtn { 
             margin-top: 20px; background: transparent; border: 2px solid var(--blue); 
             color: var(--blue); padding: 10px 30px; font-size: 1.2rem; cursor: pointer; 
-            border-radius: 50px; display: none; 
+            border-radius: 50px; display: none; font-weight: bold;
         }
         #nextBtn:hover { background: var(--blue); color: #000; }
+
+        /* --- RESULT SCREEN (Hidden by default) --- */
+        #result-screen {
+            display: none; 
+            flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; max-width: 600px;
+            text-align: center; animation: fadeIn 0.5s;
+        }
+
+        .score-card {
+            background: #18181b; border: 2px solid var(--blue);
+            padding: 40px; border-radius: 20px; width: 100%;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
+        }
+        .final-score { font-size: 4rem; margin: 20px 0; color: var(--blue); font-weight: bold; }
+        .score-msg { font-size: 1.2rem; color: #aaa; margin-bottom: 30px; }
+
+        .restart-btn {
+            background: var(--blue); color: #000; border: none;
+            padding: 15px 40px; font-size: 1.2rem; font-weight: bold;
+            border-radius: 50px; cursor: pointer; text-decoration: none;
+            display: inline-block; margin-top: 10px;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
     <a href="index.html" class="home-btn"><span>🏠</span> HUB</a>
     
-    <div class="header"><h1>PY_PREDICTOR</h1></div>
-    <p>APA OUTPUT DARI KODE BERIKUT?</p>
+    <div class="header">
+        <h1>PY_PREDICTOR</h1>
+        <div class="progress" id="progress-text">Loading System...</div>
+    </div>
 
-    <div class="code-display" id="code-box">Loading...</div>
+    <div id="game-interface">
+        <p style="margin-top:0">PREDIKSI OUTPUT DARI KODE INI:</p>
+        <div class="code-display" id="code-box"></div>
+        <div class="options-grid" id="options-box"></div>
+        <div id="feedback"></div>
+        <button id="nextBtn" onclick="nextQuestion()">SOAL BERIKUTNYA >></button>
+    </div>
 
-    <div class="options-grid" id="options-box"></div>
-    
-    <div id="feedback"></div>
-    <button id="nextBtn" onclick="loadQuestion()">SOAL BERIKUTNYA >></button>
+    <div id="result-screen">
+        <div class="score-card">
+            <h2>TRAINING COMPLETE</h2>
+            <div class="final-score" id="final-score-display">0</div>
+            <div class="score-msg" id="score-message">Evaluation Pending...</div>
+            <button onclick="startGame()" class="restart-btn">↻ ULANGI SESI</button>
+            <br><br>
+            <a href="index.html" style="color:#666; text-decoration:none;">KEMBALI KE HUB UTAMA</a>
+        </div>
+    </div>
 
     <script>
-        const questions = [
+        // --- KONFIGURASI GAME ---
+        const TOTAL_QUESTIONS_PER_GAME = 5; // Batasan Soal per Sesi
+        const SCORE_PER_QUESTION = 20;      // Nilai per soal (5 soal x 20 = 100)
+
+        // --- BANK SOAL LENGKAP ---
+        const allQuestionsBank = [
             { code: "x = 10<br>y = 5<br>print(x + y)", options: ["105", "15", "50", "Error"], answer: "15" },
+            { code: "x = '10'<br>y = '5'<br>print(x + y)", options: ["15", "105", "Error", "50"], answer: "105" },
             { code: "a = 20<br>b = 3<br>print(a % b)", options: ["6", "2", "6.66", "1"], answer: "2" },
-            { code: "nama = 'Guru'<br>print(nama * 3)", options: ["GuruGuruGuru", "Guru3", "Error", "Guru Guru Guru"], answer: "GuruGuruGuru" },
+            { code: "nama = 'A'<br>print(nama * 3)", options: ["AAA", "A3", "Error", "A A A"], answer: "AAA" },
             { code: "x = 10<br>y = 20<br>print(x > y)", options: ["True", "False", "10", "20"], answer: "False" },
-            { code: "skor = 80<br>if skor >= 75:<br>&nbsp;&nbsp;print('Lulus')", options: ["Lulus", "False", "80", "No Output"], answer: "Lulus" }
+            { code: "val = 10<br>if val == 10:<br>&nbsp;&nbsp;print('Yes')", options: ["Yes", "True", "10", "No Output"], answer: "Yes" },
+            { code: "x = 10<br>x = x + 5<br>print(x)", options: ["10", "15", "5", "105"], answer: "15" },
+            { code: "data = [1, 2, 3]<br>print(data[0])", options: ["1", "0", "2", "[1]"], answer: "1" },
+            { code: "data = [1, 2, 3]<br>print(len(data))", options: ["2", "3", "0", "Error"], answer: "3" },
+            { code: "a = True<br>b = False<br>print(a and b)", options: ["True", "False", "Error", "None"], answer: "False" },
+            { code: "print(10 // 3)", options: ["3.33", "3", "4", "1"], answer: "3" }, // Floor div
+            { code: "x = 5<br>print(x ** 2)", options: ["10", "25", "7", "55"], answer: "25" }, // Pangkat
+            { code: "for i in range(3):<br>&nbsp;&nbsp;print(i)", options: ["1 2 3", "0 1 2", "0 1 2 3", "i i i"], answer: "0 1 2" },
+            { code: "x = 10<br>if x > 5:<br>&nbsp;&nbsp;print('A')<br>else:<br>&nbsp;&nbsp;print('B')", options: ["A", "B", "AB", "Error"], answer: "A" }
         ];
 
-        let currentQ = null;
+        // --- VARIABEL STATE ---
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+
+        // --- FUNGSI UTAMA ---
+
+        function startGame() {
+            // 1. Reset State
+            score = 0;
+            currentIndex = 0;
+            
+            // 2. Acak Bank Soal dan Ambil 5 Teratas
+            let shuffled = [...allQuestionsBank].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, TOTAL_QUESTIONS_PER_GAME);
+
+            // 3. Tampilkan UI Game, Sembunyikan Result
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('game-interface').style.display = 'flex';
+            
+            // 4. Load Soal Pertama
+            loadQuestion();
+        }
 
         function loadQuestion() {
-            currentQ = questions[Math.floor(Math.random() * questions.length)];
+            // Update Progress Bar
+            document.getElementById('progress-text').innerText = `SOAL ${currentIndex + 1} DARI ${TOTAL_QUESTIONS_PER_GAME}`;
             
-            document.getElementById('code-box').innerHTML = currentQ.code;
+            // Ambil data soal
+            let q = currentQuestions[currentIndex];
+            
+            // Render Kode
+            document.getElementById('code-box').innerHTML = q.code;
             document.getElementById('feedback').innerText = "";
             document.getElementById('nextBtn').style.display = 'none';
 
+            // Render Pilihan
             const optBox = document.getElementById('options-box');
             optBox.innerHTML = "";
             
-            let shuffledOptions = [...currentQ.options].sort(() => Math.random() - 0.5);
+            // Acak urutan pilihan jawaban
+            let shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
 
             shuffledOptions.forEach(opt => {
                 let btn = document.createElement('button');
                 btn.className = 'opt-btn';
                 btn.innerText = opt;
-                btn.onclick = () => check(btn, opt);
+                btn.onclick = () => checkAnswer(btn, opt, q.answer);
                 optBox.appendChild(btn);
             });
         }
 
-        function check(btn, value) {
+        function checkAnswer(btn, selected, correct) {
+            // Disable semua tombol
             const allBtns = document.querySelectorAll('.opt-btn');
             allBtns.forEach(b => b.disabled = true);
 
-            if(value === currentQ.answer) {
+            const feedback = document.getElementById('feedback');
+
+            if(selected === correct) {
                 btn.classList.add('correct');
-                document.getElementById('feedback').innerHTML = "<span style='color:#00ff9d'>BENAR! LOGIKA TEPAT.</span>";
-                document.getElementById('nextBtn').style.display = 'inline-block';
+                feedback.innerHTML = "<span style='color:var(--green)'>BENAR! +20 Poin</span>";
+                score += SCORE_PER_QUESTION;
             } else {
                 btn.classList.add('wrong');
+                feedback.innerHTML = "<span style='color:var(--red)'>SALAH.</span>";
+                // Highlight jawaban yang benar
                 allBtns.forEach(b => {
-                    if(b.innerText === currentQ.answer) b.classList.add('correct');
+                    if(b.innerText === correct) b.classList.add('correct');
                 });
-                document.getElementById('feedback').innerHTML = "<span style='color:#ff0055'>SALAH. COBA LAGI.</span>";
-                document.getElementById('nextBtn').style.display = 'inline-block';
+            }
+
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            
+            if (currentIndex < TOTAL_QUESTIONS_PER_GAME) {
+                loadQuestion();
+            } else {
+                finishGame();
             }
         }
 
-        // Jalankan saat load
-        loadQuestion();
+        function finishGame() {
+            document.getElementById('game-interface').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'flex';
+            document.getElementById('progress-text').innerText = "SESSION ENDED";
+
+            const scoreDisplay = document.getElementById('final-score-display');
+            const msgDisplay = document.getElementById('score-message');
+
+            // Animasi Angka Skor
+            scoreDisplay.innerText = score;
+            
+            // Pesan berdasarkan nilai
+            if(score === 100) {
+                msgDisplay.innerText = "SEMPURNA! Anda Menguasai Materi.";
+                msgDisplay.style.color = "var(--green)";
+            } else if (score >= 60) {
+                msgDisplay.innerText = "BAGUS. Tingkatkan lagi ketelitiannya.";
+                msgDisplay.style.color = "var(--blue)";
+            } else {
+                msgDisplay.innerText = "JANGAN MENYERAH. Coba pelajari materi lagi.";
+                msgDisplay.style.color = "var(--red)";
+            }
+        }
+
+        // Jalankan game saat halaman dimuat
+        startGame();
+
     </script>
 </body>
 </html>
